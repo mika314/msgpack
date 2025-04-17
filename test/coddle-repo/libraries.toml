@@ -1,0 +1,5 @@
+[[library]]
+type="file"
+name="msgpack"
+path=".."
+includes=["msgpack/msgpack.hpp"]
