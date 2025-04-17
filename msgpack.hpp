@@ -22,10 +22,14 @@ namespace msgpack
                            Map>;
   class Array : public std::vector<Val>
   {
+  public:
+    using std::vector<Val>::vector;
   };
 
   class Map : public std::vector<std::pair<Val, Val>>
   {
+  public:
+    using std::vector<std::pair<Val, Val>>::vector;
   };
 
   class Blob
