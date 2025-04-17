@@ -215,7 +215,7 @@ namespace msgpack
       {
         Val e;
         cur = parse(cur, e);
-        a.items.push_back(std::move(e));
+        a.push_back(std::move(e));
       }
       out = std::move(a);
       return cur;
@@ -230,7 +230,7 @@ namespace msgpack
       {
         Val e;
         cur = parse(cur, e);
-        a.items.push_back(std::move(e));
+        a.push_back(std::move(e));
       }
       out = std::move(a);
       return cur;
@@ -245,7 +245,7 @@ namespace msgpack
       {
         Val e;
         cur = parse(cur, e);
-        a.items.push_back(std::move(e));
+        a.push_back(std::move(e));
       }
       out = std::move(a);
       return cur;
@@ -261,7 +261,7 @@ namespace msgpack
         Val k, v;
         cur = parse(cur, k);
         cur = parse(cur, v);
-        m.entries.emplace_back(std::move(k), std::move(v));
+        m.emplace_back(std::move(k), std::move(v));
       }
       out = std::move(m);
       return cur;
@@ -277,7 +277,7 @@ namespace msgpack
         Val k, v;
         cur = parse(cur, k);
         cur = parse(cur, v);
-        m.entries.emplace_back(std::move(k), std::move(v));
+        m.emplace_back(std::move(k), std::move(v));
       }
       out = std::move(m);
       return cur;
@@ -293,7 +293,7 @@ namespace msgpack
         Val k, v;
         cur = parse(cur, k);
         cur = parse(cur, v);
-        m.entries.emplace_back(std::move(k), std::move(v));
+        m.emplace_back(std::move(k), std::move(v));
       }
       out = std::move(m);
       return cur;

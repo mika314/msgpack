@@ -20,16 +20,12 @@ namespace msgpack
                            std::span<const std::byte>,
                            Array,
                            Map>;
-  class Array
+  class Array : public std::vector<Val>
   {
-  public:
-    std::vector<Val> items;
   };
 
-  class Map
+  class Map : public std::vector<std::pair<Val, Val>>
   {
-  public:
-    std::vector<std::pair<Val, Val>> entries;
   };
 
   class Blob
