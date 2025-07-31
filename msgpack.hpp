@@ -2,12 +2,20 @@
 #include <cstddef>
 #include <iostream>
 #include <span>
+#include <stdexcept>
 #include <string_view>
 #include <variant>
 #include <vector>
 
 namespace msgpack
 {
+  class ParsingError final : public std::runtime_error
+  {
+  public:
+    using std::runtime_error::runtime_error;
+    ~ParsingError() final;
+  };
+
   class Map;
   class Array;
   using Val = std::variant<int64_t,

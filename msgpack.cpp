@@ -42,7 +42,7 @@ namespace msgpack
   auto Blob::parse(std::span<const std::byte> in, Val &out) -> std::span<const std::byte>
   {
     if (in.empty())
-      throw std::runtime_error("Unexpected EOF");
+      throw ParsingError("Unexpected EOF");
 
     const auto b = static_cast<uint8_t>(in[0]);
 
@@ -141,7 +141,7 @@ namespace msgpack
     {
       uint32_t len = b & 0x1f;
       if (1 + len > in.size())
-        throw std::runtime_error("String overflow");
+        throw ParsingError("String overflow");
       out = std::string_view(reinterpret_cast<const char *>(in.data() + 1), len);
       return in.subspan(1 + len);
     }
@@ -151,7 +151,7 @@ namespace msgpack
       auto len = read_be<uint8_t>(in, 1);
       auto start = in.subspan(2);
       if (len > start.size())
-        throw std::runtime_error("str8 overflow");
+        throw ParsingError("str8 overflow");
       out = std::string_view(reinterpret_cast<const char *>(start.data()), len);
       return start.subspan(len);
     }
@@ -161,7 +161,7 @@ namespace msgpack
       auto len = read_be<uint16_t>(in, 1);
       auto start = in.subspan(3);
       if (len > start.size())
-        throw std::runtime_error("str16 overflow");
+        throw ParsingError("str16 overflow");
       out = std::string_view(reinterpret_cast<const char *>(start.data()), len);
       return start.subspan(len);
     }
@@ -171,7 +171,7 @@ namespace msgpack
       auto len = read_be<uint32_t>(in, 1);
       auto start = in.subspan(5);
       if (len > start.size())
-        throw std::runtime_error("str32 overflow");
+        throw ParsingError("str32 overflow");
       out = std::string_view(reinterpret_cast<const char *>(start.data()), len);
       return start.subspan(len);
     }
@@ -181,7 +181,7 @@ namespace msgpack
       auto len = read_be<uint8_t>(in, 1);
       auto start = in.subspan(2);
       if (len > start.size())
-        throw std::runtime_error("bin8 overflow");
+        throw ParsingError("bin8 overflow");
       out = std::span<const std::byte>(start.data(), len);
       return start.subspan(len);
     }
@@ -191,7 +191,7 @@ namespace msgpack
       auto len = read_be<uint16_t>(in, 1);
       auto start = in.subspan(3);
       if (len > start.size())
-        throw std::runtime_error("bin16 overflow");
+        throw ParsingError("bin16 overflow");
       out = std::span<const std::byte>(start.data(), len);
       return start.subspan(len);
     }
@@ -201,7 +201,7 @@ namespace msgpack
       auto len = read_be<uint32_t>(in, 1);
       auto start = in.subspan(5);
       if (len > start.size())
-        throw std::runtime_error("bin32 overflow");
+        throw ParsingError("bin32 overflow");
       out = std::span<const std::byte>(start.data(), len);
       return start.subspan(len);
     }
@@ -299,6 +299,8 @@ namespace msgpack
       return cur;
     }
 
-    throw std::runtime_error("Unknown type byte " + std::to_string(b));
+    throw ParsingError("Unknown type byte " + std::to_string(b));
   }
+
+  ParsingError::~ParsingError() = default;
 } // namespace msgpack
