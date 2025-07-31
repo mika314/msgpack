@@ -145,7 +145,7 @@ namespace Internal
     }
     else
     {
-      uint64_t i = v;
+      uint64_t i = static_cast<uint64_t>(v);
       if (i < 128)
       {
         st.put(static_cast<char>(i));
