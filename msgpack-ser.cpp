@@ -2,7 +2,7 @@
 
 #include "msgpack-ser.hpp"
 
-namespace Internal
+namespace InternalMsgPack
 {
   auto msgpackSerVal(std::ostream &st, std::string v) -> void
   {
@@ -79,4 +79,4 @@ namespace Internal
       },
       v);
   }
-} // namespace Internal
+} // namespace InternalMsgPack

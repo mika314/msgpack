@@ -16,7 +16,7 @@ auto msgpackSer(std::ostream &st, T v) -> void;
 template <typename T>
 auto msgpackDeser(const msgpack::Val &jv, T &v) -> void;
 
-namespace Internal
+namespace InternalMsgPack
 {
   template <typename T>
   struct IsVariant : std::false_type
@@ -242,7 +242,7 @@ namespace Internal
     }
     for (auto &&e : v)
     {
-      Internal::msgpackSerVal(st, e.first);
+      InternalMsgPack::msgpackSerVal(st, e.first);
       msgpackSer(st, std::move(e.second));
     }
   }
@@ -270,7 +270,7 @@ namespace Internal
     }
     for (auto &&e : v)
     {
-      Internal::msgpackSerVal(st, e.first);
+      InternalMsgPack::msgpackSerVal(st, e.first);
       msgpackSer(st, std::move(e.second));
     }
   }
@@ -299,7 +299,7 @@ namespace Internal
     }
     for (auto &&e : v)
     {
-      Internal::msgpackSerVal(st, e.first);
+      InternalMsgPack::msgpackSerVal(st, e.first);
       msgpackSer(st, std::move(e.second));
     }
   }
@@ -328,7 +328,7 @@ namespace Internal
     }
     for (auto &&e : v)
     {
-      Internal::msgpackSerVal(st, e.first);
+      InternalMsgPack::msgpackSerVal(st, e.first);
       msgpackSer(st, std::move(e.second));
     }
   }
@@ -471,7 +471,7 @@ namespace Internal
       if (index >= map.size())
         return;
 
-      if constexpr (Internal::IsVariant<T>::value)
+      if constexpr (InternalMsgPack::IsVariant<T>::value)
       {
         size_t type_idx = 0;
         const auto &type_val = map[index++].second;
@@ -481,7 +481,7 @@ namespace Internal
           type_idx = static_cast<size_t>(std::get<int64_t>(type_val));
 
         const auto &val_to_deser = map[index].second;
-        Internal::msgpackDeserVal(val_to_deser, type_idx, vv);
+        InternalMsgPack::msgpackDeserVal(val_to_deser, type_idx, vv);
         index++;
       }
       else
@@ -501,7 +501,7 @@ namespace Internal
     const msgpack::Map &map;
     size_t index;
   };
-} // namespace Internal
+} // namespace InternalMsgPack
 
 template <typename T>
 auto msgpackSer(std::ostream &st, T v) -> void
@@ -511,13 +511,13 @@ auto msgpackSer(std::ostream &st, T v) -> void
     std::stringstream sst;
     size_t count = 0;
     auto l = [&](const char *name, auto vv) mutable {
-      if constexpr (Internal::IsVariant<decltype(vv)>::value)
+      if constexpr (InternalMsgPack::IsVariant<decltype(vv)>::value)
       {
-        Internal::msgpackSerVal(sst, std::string(name) + "Type");
+        InternalMsgPack::msgpackSerVal(sst, std::string(name) + "Type");
         msgpackSer(sst, vv.index());
         count++;
       }
-      Internal::msgpackSerVal(sst, name);
+      InternalMsgPack::msgpackSerVal(sst, name);
       msgpackSer(sst, std::move(vv));
       count++;
     };
@@ -544,7 +544,7 @@ auto msgpackSer(std::ostream &st, T v) -> void
     st << sst.rdbuf();
   }
   else
-    Internal::msgpackSerVal(st, std::move(v));
+    InternalMsgPack::msgpackSerVal(st, std::move(v));
 }
 
 template <typename T>
@@ -552,11 +552,11 @@ auto msgpackDeser(const msgpack::Val &jv, T &v) -> void
 {
   if constexpr (IsSerializableClassV<T>)
   {
-    auto arch = Internal::MsgpackArch{std::get<msgpack::Map>(jv)};
+    auto arch = InternalMsgPack::MsgpackArch{std::get<msgpack::Map>(jv)};
     v.deser(arch);
   }
   else
-    Internal::msgpackDeserVal(jv, v);
+    InternalMsgPack::msgpackDeserVal(jv, v);
 }
 
 template <typename T>
