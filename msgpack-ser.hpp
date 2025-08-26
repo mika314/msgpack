@@ -562,7 +562,6 @@ auto msgpackDeser(const msgpack::Val &jv, T &v) -> void
 template <typename T>
 auto msgpackDeser(std::istream &st, T &v) -> void
 {
-  static_assert(IsSerializableClassV<T>);
   auto root = msgpack::Blob{st};
   msgpackDeser(root.val, v);
 }
